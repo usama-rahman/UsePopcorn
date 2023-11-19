@@ -61,9 +61,14 @@ export default function App() {
   const [watched, setWatched] = useState([]);
 
   useEffect(function () {
-    fetch(URL)
-      .then((res) => res.json())
-      .then((data) => setMovies(data.Search));
+    async function fetchMovies() {
+      const res = await fetch(URL);
+      const data = await res.json();
+
+      setMovies(data.Search);
+      console.log(data.Search);
+    }
+    fetchMovies();
   }, []);
 
   return (
