@@ -53,13 +53,15 @@ const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
 const KEY = "266078f8";
-const quary = "spiderman";
-const URL = `http://www.omdbapi.com/?apikey=${KEY}&s=${quary}`;
 
 export default function App() {
+  const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const tempQuary = "spiderman";
+  const URL = `http://www.omdbapi.com/?apikey=${KEY}&s=${tempQuary}`;
 
   useEffect(function () {
     async function fetchMovies() {
@@ -68,7 +70,6 @@ export default function App() {
       const data = await res.json();
 
       setMovies(data.Search);
-      console.log(data.Search);
       setIsLoading(false);
     }
     fetchMovies();
@@ -78,7 +79,7 @@ export default function App() {
     <>
       <NavBar>
         <Logo />
-        <Search />
+        <Search query={query} setQuery={setQuery} />
         <NumResult movies={movies} />
       </NavBar>
 
@@ -122,8 +123,7 @@ function Logo() {
   );
 }
 
-function Search() {
-  const [query, setQuery] = useState("");
+function Search(query, setQuery) {
   return (
     <input
       className="search"
