@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
@@ -62,7 +63,9 @@ export default function App() {
   const [error, setError] = useState("");
   const [selectedId, setSelectedId] = useState(null);
 
-  // const tempQuary = "spiderman";
+  function handleSelectMovie(id) {
+    selectedId(id);
+  }
 
   useEffect(
     function () {
@@ -118,8 +121,14 @@ export default function App() {
           {error && <ErrorMessage message={error} />}
         </Box>
         <Box>
-          <WatchSummary watched={watched} />
-          <WatchedMovieList watched={watched} />
+          {selectedId ? (
+            <MovieDetails selectedId={{ selectedId }} />
+          ) : (
+            <>
+              <WatchSummary watched={watched} />
+              <WatchedMovieList watched={watched} />
+            </>
+          )}
         </Box>
       </Main>
     </>
@@ -191,29 +200,11 @@ function Box({ children }) {
   );
 }
 
-/*
-function Box({ children }) {
-  const [isOpen2, setIsOpen2] = useState(true);
-
-  return (
-    <div className="box">
-      <button
-        className="btn-toggle"
-        onClick={() => setIsOpen2((open) => !open)}
-      >
-        {isOpen2 ? "–" : "+"}
-      </button>
-      {isOpen2 && children}
-    </div>
-  );
-}
-*/
-
-function MovieList({ movies }) {
+function MovieList({ movies, onSelectMovie }) {
   return (
     <ul className="list">
       {movies?.map((movie) => (
-        <li key={movie.imdbID}>
+        <li key={movie.imdbID} onClick={() => onSelectMovie(movie.imdbID)}>
           <img src={movie.Poster} alt={`${movie.Title} poster`} />
           <h3>{movie.Title}</h3>
           <div>
@@ -226,6 +217,10 @@ function MovieList({ movies }) {
       ))}
     </ul>
   );
+}
+
+function MovieDetails({ selectedId }) {
+  return <div className="details"> {selectedId} </div>;
 }
 
 function WatchSummary({ watched }) {
