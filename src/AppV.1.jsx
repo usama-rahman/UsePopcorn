@@ -60,6 +60,7 @@ export default function App() {
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [selectedId, setSelectedId] = useState(null);
 
   // const tempQuary = "spiderman";
 
@@ -82,7 +83,7 @@ export default function App() {
           if (data.Response === "False") throw new Error("Movie Not Found");
 
           setMovies(data.Search);
-          setIsLoading(false);
+          setError("");
         } catch (err) {
           if (err.name !== "AbortError") {
             console.log(err.messege);
@@ -92,8 +93,12 @@ export default function App() {
           setIsLoading(false);
         }
       }
-    },
-    [query]
+      if (query.length > 3) {
+        setMovies([]);
+        setError("");
+        return;
+      }
+    }[query]
   );
 
   return (
@@ -105,7 +110,13 @@ export default function App() {
       </NavBar>
 
       <Main>
-        <Box>{isLoading ? <Loader /> : <MovieList movies={movies} />}</Box>
+        <Box>
+          {isLoading && <Loader />}
+          {!isLoading && !error && (
+            <MovieList movies={movies} onSelectMovie={handleSelectMovie} />
+          )}
+          {error && <ErrorMessage message={error} />}
+        </Box>
         <Box>
           <WatchSummary watched={watched} />
           <WatchedMovieList watched={watched} />
@@ -121,6 +132,14 @@ function Loader() {
 
 function NavBar({ children }) {
   return <nav className="nav-bar">{children}</nav>;
+}
+
+function ErrorMessage({ message }) {
+  return (
+    <p className="error">
+      <span>⛔️</span> {message}
+    </p>
+  );
 }
 
 function Main({ children }) {
