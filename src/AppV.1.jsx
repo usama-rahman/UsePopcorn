@@ -59,21 +59,42 @@ export default function App() {
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const tempQuary = "spiderman";
-  const URL = `http://www.omdbapi.com/?apikey=${KEY}&s=${tempQuary}`;
+  // const tempQuary = "spiderman";
 
-  useEffect(function () {
-    async function fetchMovies() {
-      setIsLoading(true);
-      const res = await fetch(URL);
-      const data = await res.json();
+  useEffect(
+    function () {
+      async function fetchMovies() {
+        try {
+          setIsLoading(true);
+          setError("");
 
-      setMovies(data.Search);
-      setIsLoading(false);
-    }
-    fetchMovies();
-  }, []);
+          const res = await fetch(
+            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+          );
+
+          if (!res.ok)
+            throw new Error("Somthing went wrong with fethcing data ");
+
+          const data = await res.json();
+
+          if (data.Response === "False") throw new Error("Movie Not Found");
+
+          setMovies(data.Search);
+          setIsLoading(false);
+        } catch (err) {
+          if (err.name !== "AbortError") {
+            console.log(err.messege);
+            setError(err.messege);
+          }
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    },
+    [query]
+  );
 
   return (
     <>
