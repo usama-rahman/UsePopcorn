@@ -1,7 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
+
 import { useEffect, useState } from "react";
+import StaticRange from "./StarRating";
 
 // const tempMovieData = [
 //   {
@@ -70,7 +72,7 @@ export default function App() {
   function handelCloseMovie() {
     setSelectedId(null);
   }
-
+  const tempQuary = "spiderman";
   useEffect(
     function () {
       async function fetchMovies() {
@@ -79,7 +81,7 @@ export default function App() {
           setError("");
 
           const res = await fetch(
-            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+            `http://www.omdbapi.com/?apikey=${KEY}&s=${tempQuary}`
           );
           if (!res.ok)
             throw new Error("Somthing went wrong with fethcing data ");
@@ -234,7 +236,7 @@ function MovieDetails({ selectedId, onCloseMovie }) {
     Runtime: runtime,
     imdbRating,
     Plot: plot,
-    Released: realeased,
+    Released: released,
     Actors: actors,
     Director: director,
     Genre: genre,
@@ -255,10 +257,36 @@ function MovieDetails({ selectedId, onCloseMovie }) {
 
   return (
     <div className="details">
-      <button className="btn-back" onClick={onCloseMovie}>
-        &larr;
-      </button>
-      {selectedId}
+      <header>
+        <button className="btn-back" onClick={onCloseMovie}>
+          &larr;
+        </button>
+
+        <img src={poster} alt={`Poster of the ${movie}`} />
+
+        <div className="details-overview">
+          <h2> {title} </h2>
+          <p>
+            {released} &bull; {runtime}
+          </p>
+          <p> {genre} </p>
+          <p>
+            {" "}
+            <span> ⭐ </span>
+            {imdbRating} IMBD rating
+          </p>
+        </div>
+      </header>
+
+      <section>
+        <StaticRange />
+
+        <p>
+          <em> {plot} </em>
+        </p>
+        <p> Starring {actors} </p>
+        <p> Directed by {director} </p>
+      </section>
     </div>
   );
 }
