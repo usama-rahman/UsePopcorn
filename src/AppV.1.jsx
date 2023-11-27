@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
@@ -244,49 +245,62 @@ function MovieDetails({ selectedId, onCloseMovie }) {
 
   console.log(title, year);
 
-  useEffect(function () {
-    async function getMovieDetails() {
-      const res = await fetch(
-        `http://www.omdbapi.com/?apikey=${KEY}&s=${selectedId}`
-      );
-      const data = await res.json();
-      console.log(data);
-    }
-    getMovieDetails();
-  }, []);
+  useEffect(
+    function () {
+      async function getMovieDetails() {
+        setIsLoading(true);
+        const res = await fetch(
+          `http://www.omdbapi.com/?apikey=${KEY}&s=${selectedId}`
+        );
+        const data = await res.json();
+        setMovie(data);
+        setIsLoading(false);
+      }
+      getMovieDetails();
+    },
+    [selectedId]
+  );
 
   return (
     <div className="details">
-      <header>
-        <button className="btn-back" onClick={onCloseMovie}>
-          &larr;
-        </button>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <>
+          <header>
+            <button className="btn-back" onClick={onCloseMovie}>
+              &larr;
+            </button>
 
-        <img src={poster} alt={`Poster of the ${movie}`} />
+            <img src={poster} alt={`Poster of the ${movie}`} />
 
-        <div className="details-overview">
-          <h2> {title} </h2>
-          <p>
-            {released} &bull; {runtime}
-          </p>
-          <p> {genre} </p>
-          <p>
-            {" "}
-            <span> ⭐ </span>
-            {imdbRating} IMBD rating
-          </p>
-        </div>
-      </header>
+            <div className="details-overview">
+              <h2> {title} </h2>
+              <p>
+                {released} &bull; {runtime}
+              </p>
+              <p> {genre} </p>
+              <p>
+                {" "}
+                <span> ⭐ </span>
+                {imdbRating} IMBD rating
+              </p>
+            </div>
+          </header>
 
-      <section>
-        <StaticRange />
+          <section>
+            <div className="rating">
+              <StaticRange maxRating={10} size={24} />
+            </div>
 
-        <p>
-          <em> {plot} </em>
-        </p>
-        <p> Starring {actors} </p>
-        <p> Directed by {director} </p>
-      </section>
+            <p>
+              <em> {plot} </em>
+            </p>
+            <p> Starring {actors} </p>
+            <p> Directed by {director} </p>
+          </section>
+        </>
+      )}
     </div>
   );
 }
