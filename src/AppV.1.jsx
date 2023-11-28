@@ -259,6 +259,7 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched }) {
       runtime: Number(runtime.split("").at(0)),
     };
     onAddWatched(newWatchedMovie);
+    onCloseMovie();
   }
 
   useEffect(
@@ -368,8 +369,8 @@ function WatchedMovieList({ watched }) {
 function WatchMovie({ movie }) {
   return (
     <li key={movie.imdbID}>
-      <img src={movie.Poster} alt={`${movie.Title} poster`} />
-      <h3>{movie.Title}</h3>
+      <img src={movie.poster} alt={`${movie.Title} poster`} />
+      <h3>{movie.title}</h3>
       <div>
         <p>
           <span>⭐️</span>
