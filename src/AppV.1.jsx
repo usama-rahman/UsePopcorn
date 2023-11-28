@@ -73,6 +73,11 @@ export default function App() {
   function handelCloseMovie() {
     setSelectedId(null);
   }
+
+  function handelAddWatched(movie) {
+    setWatched((watched) => [...watched, movie]);
+  }
+
   const tempQuary = "spiderman";
   useEffect(
     function () {
@@ -131,6 +136,7 @@ export default function App() {
             <MovieDetails
               selectedId={{ selectedId }}
               onCloseMovie={handelCloseMovie}
+              onAddWatched={handelAddWatched}
             />
           ) : (
             <>
@@ -228,7 +234,7 @@ function MovieList({ movies, onSelectMovie }) {
   );
 }
 
-function MovieDetails({ selectedId, onCloseMovie }) {
+function MovieDetails({ selectedId, onCloseMovie, onAddWatched }) {
   const [movie, setMovie] = useState({});
   const {
     Title: title,
@@ -243,7 +249,17 @@ function MovieDetails({ selectedId, onCloseMovie }) {
     Genre: genre,
   } = movie;
 
-  console.log(title, year);
+  function handelAdd() {
+    const newWatchedMovie = {
+      imdbID: selectedId,
+      title,
+      year,
+      poster,
+      imdbRating: Number(imdbRating),
+      runtime: Number(runtime.split("").at(0)),
+    };
+    onAddWatched(newWatchedMovie);
+  }
 
   useEffect(
     function () {
@@ -281,7 +297,6 @@ function MovieDetails({ selectedId, onCloseMovie }) {
               </p>
               <p> {genre} </p>
               <p>
-                {" "}
                 <span> ⭐ </span>
                 {imdbRating} IMBD rating
               </p>
@@ -291,6 +306,11 @@ function MovieDetails({ selectedId, onCloseMovie }) {
           <section>
             <div className="rating">
               <StaticRange maxRating={10} size={24} />
+
+              <button className="btn-add " onClick={handelAdd}>
+                {" "}
+                +Add to list{" "}
+              </button>
             </div>
 
             <p>
