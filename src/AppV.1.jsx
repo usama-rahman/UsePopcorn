@@ -1,8 +1,5 @@
-/* eslint-disable no-undef */
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-
 import { useEffect, useState } from "react";
 import StaticRange from "./StarRating";
 
@@ -60,6 +57,7 @@ const KEY = "266078f8";
 
 export default function App() {
   const [query, setQuery] = useState("");
+
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -82,7 +80,7 @@ export default function App() {
     setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
   }
 
-  const tempQuary = "spiderman";
+  // const tempQuary = "spiderman";
 
   useEffect(
     function () {
@@ -94,19 +92,21 @@ export default function App() {
           setError("");
 
           const res = await fetch(
-            `http://www.omdbapi.com/?apikey=${KEY}&s=${tempQuary}`
+            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
           );
+
           if (!res.ok)
-            throw new Error("Somthing went wrong with fethcing data ");
+            throw new Error("Somthing went wrong with fethcing data");
 
           const data = await res.json();
           if (data.Response === "False") throw new Error("Movie Not Found");
 
           setMovies(data.Search);
+          console.log(data.Search);
           setError("");
         } catch (err) {
           if (err.name !== "AbortError") {
-            console.log(err.messege);
+            // console.log(err.messege);
             setError(err.messege);
           }
         } finally {
@@ -182,7 +182,7 @@ function ErrorMessage({ message }) {
 function NavBar({ children }) {
   return (
     <nav className="nav-bar">
-      <Logo />
+      {/* <Logo /> */}
       {children}
     </nav>
   );
@@ -197,14 +197,16 @@ function Logo() {
   );
 }
 
-function Search(query, setQuery) {
+function Search({ query, setQuery }) {
   return (
     <input
       className="search"
       type="text"
       placeholder="Search movies..."
       value={query}
-      onChange={(e) => setQuery(e.target.value)}
+      onChange={(e) => {
+        setQuery(e.target.value);
+      }}
     />
   );
 }
@@ -212,7 +214,7 @@ function Search(query, setQuery) {
 function NumResult({ movies }) {
   return (
     <p className="num-results">
-      Found <strong>{/* {movies.length} */}</strong> results
+      Found <strong>{movies.length}</strong> results
     </p>
   );
 }
@@ -237,27 +239,27 @@ function Box({ children }) {
   );
 }
 
+// onClick={() => onSelectMovie(item.imdbID)}
+
 function MovieList({ movies, onSelectMovie }) {
   return (
-    <ul className="list list-movies ">
-      {movies?.map((movie) => (
-        <Movie movie={movie} key={movie.id} onSelectMovie={onSelectMovie} />
-      ))}
-    </ul>
+    <>
+      <ul className="list list-movies">
+        {movies?.map((item) => (
+          <li key={item.imdbID}>
+            <img src={item.Poster} alt={`${item.Title}poster`} />
+            <h3>{item.Title}</h3>
+            <div>
+              <p>
+                <span>🗓</span>
+                <span>{item.Year}</span>
+              </p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </>
   );
-}
-
-function Movie({ movie, onSelectMovie }) {
-  <li key={movie.imdbID} onClick={() => onSelectMovie(movie.imdbID)}>
-    <img src={movie.Poster} alt={`${movie.Title} poster`} />
-    <h3>{movie.Title}</h3>
-    <div>
-      <p>
-        <span>🗓</span>
-        <span>{movie.Year}</span>
-      </p>
-    </div>
-  </li>;
 }
 
 function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
@@ -427,7 +429,7 @@ function WatchedMovieList({ watched }) {
         <WatchMovie
           movie={movie}
           key={movie.imdbID}
-          onDeleteWatched={onDeleteWatched}
+          // onDeleteWatched={onDeleteWatched}
         />
       ))}
     </ul>
