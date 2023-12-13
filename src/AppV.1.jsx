@@ -89,6 +89,7 @@ export default function App() {
       async function fetchMovies() {
         try {
           setIsLoading(true);
+
           setError("");
 
           const res = await fetch(
