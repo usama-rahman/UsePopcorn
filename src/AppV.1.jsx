@@ -247,7 +247,7 @@ function MovieList({ movies, onSelectMovie }) {
     <>
       <ul className="list list-movies">
         {movies?.map((item) => (
-          <li key={item.imdbID}>
+          <li key={item.imdbID} onClick={() => onSelectMovie(item.imdbID)}>
             <img src={item.Poster} alt={`${item.Title}poster`} />
             <h3>{item.Title}</h3>
             <div>
