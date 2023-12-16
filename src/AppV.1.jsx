@@ -374,11 +374,23 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
 
           <section>
             <div className="rating">
-              <StaticRange maxRating={10} size={24} />
+              {!isWatched ? (
+                <>
+                  <StaticRange
+                    maxRating={10}
+                    size={24}
+                    onSetRating={setUserRating}
+                  />
 
-              <button className="btn-add " onClick={handelAdd}>
-                +Add to list
-              </button>
+                  {userRating > 0 && (
+                    <button className="btn-add " onClick={handelAdd}>
+                      +Add to list
+                    </button>
+                  )}
+                </>
+              ) : (
+                <p> You rated with movie </p>
+              )}
             </div>
 
             <p>
