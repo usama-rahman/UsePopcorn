@@ -110,6 +110,7 @@ export default function App() {
         } catch (err) {
           if (err.name !== "AbortError") {
             // console.log(err.messege);
+
             setError(err.messege);
           }
         } finally {
